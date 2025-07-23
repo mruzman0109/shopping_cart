@@ -1,20 +1,22 @@
 package hr.tcom.shoppingcart.service;
 
+import hr.tcom.shoppingcart.dto.CartDTO;
+import hr.tcom.shoppingcart.dto.CartItemDTO;
+import hr.tcom.shoppingcart.dto.CartMapper;
 import hr.tcom.shoppingcart.entity.Action;
-import hr.tcom.shoppingcart.entity.Cart;
-import hr.tcom.shoppingcart.entity.CartItem;
-import hr.tcom.shoppingcart.repository.CartItemRepository;
-import hr.tcom.shoppingcart.repository.CartRepository;
+import hr.tcom.shoppingcart.entity.rdb.Cart;
+import hr.tcom.shoppingcart.repository.rdb.CartItemRepository;
+import hr.tcom.shoppingcart.repository.rdb.CartRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Service
-public class CartServiceImpl implements CartService {
+@Profile("h2 | postgres")
+public class CartServiceRDBImpl implements CartService {
 
     @Autowired
     private CartRepository cartRepository;
@@ -23,7 +25,7 @@ public class CartServiceImpl implements CartService {
     private CartItemRepository cartItemRepository;
 
     @Override
-    public Cart getCart(String customerId) {
+    public CartDTO getCart(String customerId) {
         Cart cart = cartRepository.findByCustomerId(customerId).orElseGet(() -> {
             Cart c = new Cart();
             c.setCustomerId(customerId);
@@ -31,17 +33,18 @@ public class CartServiceImpl implements CartService {
         });
          // Remove from items all items that are marked DELETE in Action
         cart.getItems().removeIf(item -> item.getAction() == Action.DELETE);
-        return cart;
+         // Convert Cart to CartDTO
+        return CartMapper.toDTO(cart);
     }
 
     @Override
-    public boolean addItem(String customerId, CartItem item) {
+    public boolean addItem(String customerId, CartItemDTO item) {
         if(item.getOfferId() == null || item.getOfferId().isEmpty()) {
             return false; // Offer ID must not be null or empty
         }
-        Cart cart = getCart(customerId);
+        CartDTO cart = getCart(customerId);
         cart.getItems().add(item);
-        cartRepository.save(cart);
+        cartRepository.save(CartMapper.toEntity(cart));
         return true;
     }
 
@@ -50,13 +53,13 @@ public class CartServiceImpl implements CartService {
         if(customerId == null || customerId.isEmpty() || itemId == null || itemId.isEmpty()) {
             return false; // Customer ID and Item ID must not be null or empty
         }
-        Cart cart = getCart(customerId);
+        CartDTO cart = getCart(customerId);
         cart.getItems().stream().map(item -> {
             if (item.getOfferId().equals(itemId)) {
                 item.setAction(Action.DELETE);
             }
             return item;
-        }).forEach(item -> cartRepository.save(cart));
+        }).forEach(item -> cartRepository.save(CartMapper.toEntity(cart)));
         return true;
     }
 

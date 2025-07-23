@@ -1,7 +1,7 @@
 package hr.tcom.shoppingcart;
 
 import hr.tcom.shoppingcart.entity.Action;
-import hr.tcom.shoppingcart.entity.CartItem;
+import hr.tcom.shoppingcart.entity.rdb.CartItem;
 import hr.tcom.shoppingcart.dto.StatsResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,9 +1,9 @@
 package hr.tcom.shoppingcart.controller;
 
+import hr.tcom.shoppingcart.dto.CartDTO;
+import hr.tcom.shoppingcart.dto.CartItemDTO;
 import hr.tcom.shoppingcart.dto.StatsResponse;
 import hr.tcom.shoppingcart.entity.Action;
-import hr.tcom.shoppingcart.entity.Cart;
-import hr.tcom.shoppingcart.entity.CartItem;
 import hr.tcom.shoppingcart.service.CartService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -24,13 +24,13 @@ public class CartController {
 
    @GetMapping("/{customerId}")
    @Operation(summary = "Get current cart for a customer")
-   public ResponseEntity<Cart> getCart(@PathVariable String customerId) {
+   public ResponseEntity<CartDTO> getCart(@PathVariable String customerId) {
       return ResponseEntity.ok(cartService.getCart(customerId));
    }
 
    @PostMapping("/{customerId}/item")
    @Operation(summary = "Add item to cart")
-   public ResponseEntity<Void> addItem(@PathVariable String customerId, @Valid @RequestBody CartItem item) {
+   public ResponseEntity<Void> addItem(@PathVariable String customerId, @Valid @RequestBody CartItemDTO item) {
       if (cartService.addItem(customerId, item)) {
          return ResponseEntity.status(HttpStatus.CREATED).build();
       }

@@ -1,4 +1,4 @@
-package hr.tcom.shoppingcart.entity;
+package hr.tcom.shoppingcart.entity.rdb;
 
 import jakarta.persistence.*;
 import lombok.Data;

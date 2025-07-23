@@ -1,6 +1,8 @@
-package hr.tcom.shoppingcart.entity;
+package hr.tcom.shoppingcart.entity.rdb;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import hr.tcom.shoppingcart.entity.Action;
+import hr.tcom.shoppingcart.entity.Price;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;

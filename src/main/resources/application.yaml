@@ -41,7 +41,7 @@ spring:
     password: 123456
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     show-sql: true
     properties:
       hibernate:
@@ -55,7 +55,9 @@ spring:
       on-profile: mongo
   data:
     mongodb:
-      uri: mongodb://localhost:27017/shoppingcart
+      uri: mongodb://cartUser:123456@localhost:27017/shopping_cart
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+  jpa:
+    enabled: false
