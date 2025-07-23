@@ -1,7 +1,0 @@
-# Use this commands to create DATABASE for shoppingcart application using postgress
-
-postgres=# CREATE DATABASE shoppingcart;
-postgres=# CREATE USER shoppinguser WITH PASSWORD '123456';
-postgres=# GRANT ALL PRIVILEGES ON DATABASE shoppingcart TO shoppinguser;
-
-
