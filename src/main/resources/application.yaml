@@ -58,6 +58,7 @@ spring:
       uri: mongodb://cartUser:123456@localhost:27017/shopping_cart
   autoconfigure:
     exclude:
-      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.jpa.HibernateJpaAutoConfiguration
+
   jpa:
     enabled: false

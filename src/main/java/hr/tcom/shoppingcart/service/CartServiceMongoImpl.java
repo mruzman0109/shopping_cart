@@ -5,8 +5,8 @@ import hr.tcom.shoppingcart.dto.CartItemDTO;
 import hr.tcom.shoppingcart.dto.CartMapper;
 import hr.tcom.shoppingcart.entity.Action;
 import hr.tcom.shoppingcart.entity.mongo.Cart;
-import hr.tcom.shoppingcart.repository.mongo.CartItemRepository;
-import hr.tcom.shoppingcart.repository.mongo.CartRepository;
+import hr.tcom.shoppingcart.repository.mongo.MongoCartItemRepository;
+import hr.tcom.shoppingcart.repository.mongo.MongoCartRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -20,10 +20,10 @@ public class CartServiceMongoImpl implements CartService {
 
 
    @Autowired
-   private CartRepository cartRepository;
+   private MongoCartRepository cartRepository;
 
    @Autowired
-   private CartItemRepository cartItemRepository;
+   private MongoCartItemRepository cartItemRepository;
 
    @Override
    public CartDTO getCart(String customerId) {
