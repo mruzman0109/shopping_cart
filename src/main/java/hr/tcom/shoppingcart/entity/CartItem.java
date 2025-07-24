@@ -44,6 +44,7 @@ public class CartItem {
 
 
    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+   @NotNull
    @Valid
    private List<Price> prices = new ArrayList<>();
 

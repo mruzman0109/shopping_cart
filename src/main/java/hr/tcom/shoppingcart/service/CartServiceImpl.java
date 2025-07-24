@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.logging.Logger;
 
 @Service
 public class CartServiceImpl implements CartService {
@@ -21,6 +22,8 @@ public class CartServiceImpl implements CartService {
 
     @Autowired
     private CartItemRepository cartItemRepository;
+
+    Logger log = Logger.getLogger(CartServiceImpl.class.getName());
 
     @Override
     public Cart getCart(String customerId) {
@@ -37,7 +40,12 @@ public class CartServiceImpl implements CartService {
     @Override
     public boolean addItem(String customerId, CartItem item) {
         if(item.getOfferId() == null || item.getOfferId().isEmpty()) {
+            log.warning("Attempt to add item with null or empty offer ID");
             return false; // Offer ID must not be null or empty
+        }
+        if(item.getPrices() == null || item.getPrices().isEmpty()) {
+            log.warning("Attempt to add item with null or empty prices");
+            return false; // Prices must not be null or empty
         }
         Cart cart = getCart(customerId);
         cart.getItems().add(item);

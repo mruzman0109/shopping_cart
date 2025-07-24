@@ -3,6 +3,9 @@ package hr.tcom.shoppingcart;
 import hr.tcom.shoppingcart.entity.Action;
 import hr.tcom.shoppingcart.entity.CartItem;
 import hr.tcom.shoppingcart.dto.StatsResponse;
+import hr.tcom.shoppingcart.entity.Price;
+import hr.tcom.shoppingcart.entity.PriceType;
+import hr.tcom.shoppingcart.entity.RecurrenceUnit;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,7 +14,9 @@ import org.springframework.http.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,29 +34,45 @@ public class CartControllerTest {
    }
 
    @Test
-   public void testAddAndGetCart() {
+   public void shouldAddItemToCartAndRetrieveItSuccessfully() {
       String customerId = "customer123";
 
-      // Create a cart item
-      CartItem item = new CartItem();;
-      item.setOfferId("offer001");
+      // Prepare cart item
+      CartItem cartItem = new CartItem();
+      cartItem.setOfferId("offer001");
+      Price price = new Price();
+      price.setPriceType(PriceType.RECURRING);
+      price.setRecurrence(2);
+      price.setRecurrenceUnit(RecurrenceUnit.DAYS);
+      price.setPriceValue(new BigDecimal(10.5));
+      cartItem.setPrices(List.of(price));
 
+      // Set headers
       HttpHeaders headers = new HttpHeaders();
       headers.setContentType(MediaType.APPLICATION_JSON);
-      HttpEntity<CartItem> request = new HttpEntity<>(item, headers);
 
-      // Add item
-      ResponseEntity<Void> addResponse = restTemplate.postForEntity(
-            baseUrl() + "/" + customerId + "/item", request, Void.class);
+      // Create HTTP request with item and headers
+      HttpEntity<CartItem> request = new HttpEntity<>(cartItem, headers);
 
-      assertThat(addResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+      // Send POST request to add item to cart
+      ResponseEntity<Void> addItemResponse = restTemplate.postForEntity(
+            baseUrl() + "/" + customerId + "/item",
+            request,
+            Void.class
+      );
 
-      // Get cart
-      ResponseEntity<String> getCart = restTemplate.getForEntity(
-            baseUrl() + "/" + customerId, String.class);
+      // Verify item was added successfully
+      assertThat(addItemResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
-      assertThat(getCart.getStatusCode()).isEqualTo(HttpStatus.OK);
-      assertThat(getCart.getBody()).contains("offer001");
+      // Send GET request to retrieve the cart
+      ResponseEntity<String> getCartResponse = restTemplate.getForEntity(
+            baseUrl() + "/" + customerId,
+            String.class
+      );
+
+      // Verify cart contents
+      assertThat(getCartResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+      assertThat(getCartResponse.getBody()).contains("offer001");
    }
 
    @Test
